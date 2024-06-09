@@ -18,7 +18,7 @@ find_package(Qt5Widgets REQUIRED)
 find_package(Qt5OpenGL REQUIRED)
 
 # OpenCascade
-find_package(OpenCASCADE EXACT PATHS /usr/local/lib)
+find_package(OpenCASCADE)
 
 # Use Qt
 set(CMAKE_AUTOMOC ON)

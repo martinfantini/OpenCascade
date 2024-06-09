@@ -4,7 +4,7 @@ FROM ubuntu:24.04
 ENV OPT_DIR /opt
 ENV THIRDPARTY_DIR ${OPT_DIR}/3rdparty
 
-ENV OCCT_VERSION 7_7_2
+ENV OCCT_VERSION 7_8_1
 ENV DOCTEST_VERSION 2.4.11
 ENV GMSH_VERSION 4_4_0
 ENV OCC_CSG_VERSION 0.9.9.2
@@ -61,11 +61,11 @@ WORKDIR ${OPT_DIR}/OCC-CSG-${OCC_CSG_VERSION}/build
 WORKDIR ${OPT_DIR}/OCC-CSG-${OCC_CSG_VERSION}-Release
 WORKDIR ${OPT_DIR}/OCC-CSG-${OCC_CSG_VERSION}
 #RUN cmake -S . -B ./build  \
-#    -DCMAKE_BUILD_TYPE:STRING="Release" \
-#    -DINSTALL_DIR:PATH=${OPT_DIR}/OCC-CSG-${OCC_CSG_VERSION}-Release \
-#    -DOpenCASCADE_DIR=${OPT_DIR}/opencascade-${OCCT_VERSION}-Release/lib/cmake/opencascade \
-#    -DCMAKE_CURRENT_SOURCE_DIR:PATH=/usr/include/freetype2/freetype \
-#    -D3RDPARTY_FREETYPE_LIBRARY_DIR:PATH=/usr/lib/x86_64-linux-gnu
+#        -DCMAKE_BUILD_TYPE:STRING="Release" \
+#        -DINSTALL_DIR:PATH=${OPT_DIR}/OCC-CSG-${OCC_CSG_VERSION}-Release \
+#        -DOpenCASCADE_DIR=${OPT_DIR}/opencascade-${OCCT_VERSION}-Release/lib/cmake/opencascade \
+#        -DCMAKE_CURRENT_SOURCE_DIR:PATH=/usr/include/freetype2/freetype \
+#        -D3RDPARTY_FREETYPE_LIBRARY_DIR:PATH=/usr/lib/x86_64-linux-gnu
 
 #WORKDIR ${OPT_DIR}/OCC-CSG-${OCC_CSG_VERSION}/build
 #RUN make -j$(nproc) install
@@ -93,9 +93,14 @@ WORKDIR ${OPT_DIR}/netgen-v${NETEGEN_VERSION}/build
 WORKDIR ${OPT_DIR}/netgen-v${NETEGEN_VERSION}-Release
 WORKDIR ${OPT_DIR}/netgen-v${NETEGEN_VERSION}
 
-#RUN cmake -S . -B ${OPT_DIR}/netgen-v${NETEGEN_VERSION}/build \
-#    -DINSTALL_DIR=${OPT_DIR}/netgen-v${NETEGEN_VERSION}-Release \
-#    -DCMAKE_BUILD_TYPE:STRING="Release" \
-#    -DUSE_OCC:BOOL=ON \
-#    -DUSE_PYTHON:BOOL=ON \
-#    -Docc_libs=${OPT_DIR}/opencascade-${OCCT_VERSION}-Release/lib
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${OPT_DIR}/opencascade-${OCCT_VERSION}-Release/lib"
+
+RUN cmake -S . -B ${OPT_DIR}/netgen-v${NETEGEN_VERSION}/build \
+    -DINSTALL_DIR=${OPT_DIR}/netgen-v${NETEGEN_VERSION}-Release \
+    -DCMAKE_BUILD_TYPE:STRING="Release" \
+    -DUSE_OCC:BOOL=ON \
+    -DUSE_PYTHON:BOOL=ON \
+    -DOpenCascade_DIR:PATH=${OPT_DIR}/opencascade-${OCCT_VERSION}-Release/lib/cmake/opencascade
+
+WORKDIR ${OPT_DIR}/netgen-v${NETEGEN_VERSION}/build
+RUN make -j$(nproc) install
