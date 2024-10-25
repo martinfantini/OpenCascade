@@ -1,6 +1,12 @@
 # download the data from the last emscripten
 FROM ubuntu:24.04
 
+ARG DOCKER_USER_NAME=default_user
+ARG DOCKER_USER_ID=1234
+
+ARG DOCKER_GROUP_NAME=defulat_group
+ARG DOCKER_GROUP_ID=1234
+
 ENV OPT_DIR /opt
 ENV THIRDPARTY_DIR ${OPT_DIR}/3rdparty
 
@@ -104,3 +110,15 @@ RUN cmake -S . -B ${OPT_DIR}/netgen-v${NETEGEN_VERSION}/build \
 
 WORKDIR ${OPT_DIR}/netgen-v${NETEGEN_VERSION}/build
 RUN make -j$(nproc) install
+
+# create user:
+RUN groupadd -g ${DOCKER_GROUP_ID} ${DOCKER_GROUP_NAME}
+RUN adduser --home ${DOCKER_USER_ID} --gid ${DOCKER_GROUP_ID} --home /home/${DOCKER_USER_NAME} --disabled-password --allow-bad-names ${DOCKER_USER_NAME}
+
+USER ${DOCKER_USER_NAME}
+
+RUN mkdir -p /home/${DOCKER_USER_NAME}
+RUN echo "alias ll='ls -al'" >> /home/${DOCKER_USER_NAME}/.bashrc
+RUN echo 'HISTTIMEFORMAT="%d/%m/%y %T "\n' >> /home/${DOCKER_USER_NAME}/.bashrc
+RUN echo 'HISTSIZE=10000' >> /home/${DOCKER_USER_NAME}/.bashrc
+RUN echo 'HISTFILESIZE=10000\n' >> /home/${DOCKER_USER_NAME}/.bashrc

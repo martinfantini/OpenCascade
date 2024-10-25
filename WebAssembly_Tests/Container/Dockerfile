@@ -6,6 +6,8 @@ ENV THIRDPARTY_DIR ${OPT_DIR}/3rdparty
 ENV OCCT_VERSION 7_7_2
 ENV FREETYPE_VERSION 2-13-2
 
+USER root
+
 COPY CMakeLists.txt ${OPT_DIR}/opencascade-${OCCT_VERSION}/samples/webgl
 
 WORKDIR ${OPT_DIR}/web-gl-release

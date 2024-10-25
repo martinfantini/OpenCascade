@@ -10,10 +10,18 @@ function build_opencascade_webassembly_tests()
     rm CMakeLists.txt
 }
 
-function run_opencascade_webassembly_tests()
+function run_opencascade_webassembly_tests_root()
 {
     docker run  \
-        --user $(id -u) \
+        --name ${webassembly_container_test_name} \
+        -p 7000:7000 ${webassembly_container_test_name}
+}
+
+function run_opencascade_webassembly_tests_user()
+{
+    echo "This container does not work because it neeed root access to the libraries"
+    docker run  \
+        --user $(whoami) \
         --name ${webassembly_container_test_name} \
         -p 7000:7000 ${webassembly_container_test_name}
 }
